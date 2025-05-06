@@ -1,0 +1,17 @@
+# Core Libraries
+tensorflow>=2.8.0            # برای دیپ‌لرنینگ و مدل‌های Transfer Learning
+opencv-python>=4.5.5         # پردازش تصاویر و تغییر سایز
+numpy>=1.21.0                # محاسبات عددی
+pandas>=1.3.5                # مدیریت داده‌های ساختاریافته
+
+# Visualization & Analysis
+matplotlib>=3.5.0            # رسم نمودارها و گراف‌ها
+seaborn>=0.11.2              # ویژوالایزیشن حرفه‌ای
+scikit-learn>=1.0.2          # ارزیابی مدل (مثلاً Confusion Matrix)
+
+# Utilities & Deployment
+streamlit>=1.10.0            # ساخت وباپ سریع برای دمو
+grad-cam>=1.4.6              # تفسیرپذیری مدل با Grad-CAM
+tqdm>=4.64.0                 # نوار پیشرفت برای آموزش
+Pillow>=9.2.0                # کار با تصاویر در پایتون
+requests>=2.28.1             # دانلود دیتاست/مدل از URL (اختیاری)
