@@ -1,9 +1,12 @@
 import tensorflow as tf
-from tensorflow.keras.applications import MobileNetV2
-from tensorflow.keras import layers, models, optimizers, callbacks
+from keras.applications import MobileNetV2
+from keras import layers, models, optimizers, callbacks
 from data_preprocessing import load_and_preprocess_data
 import matplotlib.pyplot as plt
 import os
+
+tf.config.threading.set_inter_op_parallelism_threads(2)
+tf.config.threading.set_intra_op_parallelism_threads(2)
 
 gpus = tf.config.list_physical_devices('GPU')
 if gpus:
@@ -24,11 +27,10 @@ def build_model(input_shape=(300, 300, 3), num_classes=3):
         tf.keras.Model: Compiled model
     """
     # Load base model with ImageNet weights (excluding top)
-    base_model = MobileNetV2(
+    base_model = tf.keras.applications.MobileNetV2(
+        input_shape=input_shape,
         include_top=False,
         weights='imagenet',
-        input_shape=input_shape,
-        pooling=None,
         alpha=0.35
     )
 
@@ -36,18 +38,17 @@ def build_model(input_shape=(300, 300, 3), num_classes=3):
     base_model.trainable = False
 
     # Build complete model
-    inputs = tf.keras.Input(shape=input_shape)
-    x = base_model(inputs, training=False)
-    x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dense(128, activation='relu')(x)
-    x = layers.Dropout(0.5)(x)
-    outputs = layers.Dense(num_classes, activation='softmax')(x)
-
-    model = tf.keras.Model(inputs, outputs)
+    model = tf.keras.Sequential([
+        base_model,
+        tf.keras.layers.GlobalAveragePooling2D(),
+        tf.keras.layers.Dense(64, activation='relu'),
+        tf.keras.layers.Dropout(0.3),
+        tf.keras.layers.Dense(num_classes, activation='softmax')
+    ])
 
     # Compile model
     model.compile(
-        optimizer=optimizers.Adam(learning_rate=3e-4),
+        optimizer=tf.keras.optimizers.Adam(learning_rate=1e-4),
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy']
     )
