@@ -28,7 +28,9 @@ def load_and_preprocess_data(data_dir, img_size=(64, 64), test_size=0.2, val_siz
 
     for class_name in classes:
         class_dir = os.path.join(data_dir, class_name, 'images')
+        print(f"Checking directory: {class_dir}")
         if not os.path.exists(class_dir):
+            print(f"Directory not found: {class_dir}")
             continue
 
         for file in os.listdir(class_dir):
