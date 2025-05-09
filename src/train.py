@@ -5,6 +5,8 @@ from data_preprocessing import load_and_preprocess_data
 import matplotlib.pyplot as plt
 import os
 
+os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+
 tf.config.threading.set_inter_op_parallelism_threads(2)
 tf.config.threading.set_intra_op_parallelism_threads(2)
 
