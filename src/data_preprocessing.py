@@ -77,8 +77,8 @@ def load_and_preprocess_data(data_dir, img_size=(64, 64), test_size=0.2, val_siz
         return dataset
 
     # تنظیمات برای سیستم ضعیف
-    batch_size = 16  # کاهش اندازه بچ
-    img_size = (64, 64)  # کاهش سایز تصویر
+    #batch_size = 16  # کاهش اندازه بچ
+    #img_size = (64, 64)  # کاهش سایز تصویر
 
     train_dataset = create_dataset(X_train, y_train, batch_size=batch_size, shuffle=True)
     val_dataset = create_dataset(X_val, y_val, batch_size=batch_size)

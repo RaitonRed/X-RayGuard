@@ -55,7 +55,7 @@ if __name__ == '__main__':
     # Load test data
     from data_preprocessing import load_and_preprocess_data
 
-    _, _, test_dataset, class_names = load_and_preprocess_data('data/raw/COVID-19_Radiography_Dataset')
+    _, _, test_dataset, class_names = load_and_preprocess_data('../data/raw/COVID-19_Radiography_Dataset')
 
     # Evaluate model
     evaluate_model(model, test_dataset, class_names)

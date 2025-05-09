@@ -72,9 +72,9 @@ def train_model(data_dir, model_save_path='models/best_model.h5', epochs=10):
     os.makedirs(os.path.dirname(model_save_path), exist_ok=True)
 
     # Load and preprocess data
-    train_dataset, val_dataset, _, class_names = load_and_preprocess_data(
+    train_dataset, val_dataset, test_dataset, class_names = load_and_preprocess_data(
         data_dir,
-        img_size=(128, 128),
+        img_size=(64, 64),
         batch_size=16
     )
 

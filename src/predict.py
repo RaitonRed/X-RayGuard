@@ -6,7 +6,7 @@ import argparse
 
 
 class LungDiseasePredictor:
-    def __init__(self, model_path='models/best_model.h5', img_size=(300, 300)):
+    def __init__(self, model_path='models/best_model.h5', img_size=(60, 60)):
         """
         Initialize predictor
 
@@ -16,7 +16,7 @@ class LungDiseasePredictor:
         """
         self.model = tf.keras.models.load_model(model_path)
         self.img_size = img_size
-        self.class_names = ['COVID-19', 'Normal', 'Pneumonia']  # Should match training data
+        self.class_names = ['COVID', 'Normal', 'Viral Pneumonia']  # Should match training data
 
     def preprocess_image(self, image_path):
         """
