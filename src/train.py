@@ -149,7 +149,7 @@ def plot_training_history(history, save_dir='results/training_plots'):
 
 if __name__ == '__main__':
     # Example usage
-    DATA_DIR = 'data/raw/COVID-19_Radiography_Dataset'
+    DATA_DIR = '../data/raw/COVID-19_Radiography_Dataset'
     model, history, test_dataset, class_names = train_model(DATA_DIR)
     plot_training_history(history)
     print("Model training completed successfully!")
