@@ -1,14 +1,20 @@
 import tensorflow as tf
-from tensorflow.keras.applications import EfficientNetB3
+from tensorflow.keras.applications import MobileNetV2
 from tensorflow.keras import layers, models, optimizers, callbacks
 from data_preprocessing import load_and_preprocess_data
 import matplotlib.pyplot as plt
 import os
 
-
+gpus = tf.config.list_physical_devices('GPU')
+if gpus:
+    try:
+        tf.config.experimental.set_memory_growth(gpus[0], True)
+    except RuntimeError as e:
+        print(e)
+        
 def build_model(input_shape=(300, 300, 3), num_classes=3):
     """
-    Build model based on EfficientNetB3 with transfer learning
+    Build model based on MobileNetV2 with transfer learning
 
     Args:
         input_shape (tuple): Input image dimensions
@@ -18,11 +24,12 @@ def build_model(input_shape=(300, 300, 3), num_classes=3):
         tf.keras.Model: Compiled model
     """
     # Load base model with ImageNet weights (excluding top)
-    base_model = EfficientNetB3(
+    base_model = MobileNetV2(
         include_top=False,
         weights='imagenet',
         input_shape=input_shape,
-        pooling=None
+        pooling=None,
+        alpha=0.35
     )
 
     # Freeze base layers for fine-tuning
@@ -32,7 +39,7 @@ def build_model(input_shape=(300, 300, 3), num_classes=3):
     inputs = tf.keras.Input(shape=input_shape)
     x = base_model(inputs, training=False)
     x = layers.GlobalAveragePooling2D()(x)
-    x = layers.Dense(256, activation='relu')(x)
+    x = layers.Dense(128, activation='relu')(x)
     x = layers.Dropout(0.5)(x)
     outputs = layers.Dense(num_classes, activation='softmax')(x)
 
@@ -40,7 +47,7 @@ def build_model(input_shape=(300, 300, 3), num_classes=3):
 
     # Compile model
     model.compile(
-        optimizer=optimizers.Adam(learning_rate=1e-4),
+        optimizer=optimizers.Adam(learning_rate=3e-4),
         loss='sparse_categorical_crossentropy',
         metrics=['accuracy']
     )
@@ -48,7 +55,7 @@ def build_model(input_shape=(300, 300, 3), num_classes=3):
     return model
 
 
-def train_model(data_dir, model_save_path='models/best_model.h5', epochs=20):
+def train_model(data_dir, model_save_path='models/best_model.h5', epochs=10):
     """
     Train model with input data
 
@@ -64,7 +71,11 @@ def train_model(data_dir, model_save_path='models/best_model.h5', epochs=20):
     os.makedirs(os.path.dirname(model_save_path), exist_ok=True)
 
     # Load and preprocess data
-    train_dataset, val_dataset, test_dataset, class_names = load_and_preprocess_data(data_dir)
+    train_dataset, val_dataset, _, class_names = load_and_preprocess_data(
+        data_dir,
+        img_size=(128, 128),
+        batch_size=16
+    )
 
     # Build model
     model = build_model()
@@ -74,19 +85,13 @@ def train_model(data_dir, model_save_path='models/best_model.h5', epochs=20):
     callbacks_list = [
         callbacks.EarlyStopping(
             monitor='val_loss',
-            patience=5,
+            patience=3,  # کاهش صبر
             restore_best_weights=True
         ),
         callbacks.ModelCheckpoint(
             filepath=model_save_path,
             monitor='val_accuracy',
-            save_best_only=True,
-            mode='max'
-        ),
-        callbacks.ReduceLROnPlateau(
-            monitor='val_loss',
-            factor=0.1,
-            patience=3
+            save_best_only=True
         )
     ]
 
@@ -95,7 +100,8 @@ def train_model(data_dir, model_save_path='models/best_model.h5', epochs=20):
         train_dataset,
         epochs=epochs,
         validation_data=val_dataset,
-        callbacks=callbacks_list
+        callbacks=callbacks_list,
+        verbose=2
     )
 
     # Save final model
