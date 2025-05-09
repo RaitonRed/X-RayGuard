@@ -1,9 +1,8 @@
 # Core Libraries
-tensorflow==2.10.0           # Deep learning framework
-tensorflow-cpu
-keras==2.10.0                # High-level neural networks API
+tensorflow          # Deep learning framework
+keras              # High-level neural networks API
 opencv-python==4.6.0.66      # Image processing
-numpy==1.23.5                # Numerical computations
+numpy                # Numerical computations
 pandas==1.5.2                # Data manipulation
 
 # Visualization & Analysis
