@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import os
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
 
 tf.config.threading.set_inter_op_parallelism_threads(2)
 tf.config.threading.set_intra_op_parallelism_threads(2)
@@ -17,7 +18,7 @@ if gpus:
     except RuntimeError as e:
         print(e)
         
-def build_model(input_shape=(300, 300, 3), num_classes=3):
+def build_model(input_shape=(96, 96, 3), num_classes=3):
     """
     Build model based on MobileNetV2 with transfer learning
 
@@ -76,7 +77,7 @@ def train_model(data_dir, model_save_path='../models/best_model.h5', epochs=10):
     # Load and preprocess data
     train_dataset, val_dataset, test_dataset, class_names = load_and_preprocess_data(
         data_dir,
-        img_size=(64, 64),
+        img_size=(96, 96),
         batch_size=16
     )
 

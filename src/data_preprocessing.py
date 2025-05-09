@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 import cv2
 
 
-def load_and_preprocess_data(data_dir, img_size=(64, 64), test_size=0.2, val_size=0.1, seed=42, batch_size=16):
+def load_and_preprocess_data(data_dir, img_size=(96, 96), test_size=0.2, val_size=0.1, seed=42, batch_size=16):
     """
     Load and preprocess image data from classified directories
 
@@ -63,14 +63,19 @@ def load_and_preprocess_data(data_dir, img_size=(64, 64), test_size=0.2, val_siz
         image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
         image = cv2.resize(image, img_size)
         image = image / 255.0
-        return image.astype(np.float32), label
+        return image.astype(np.float32), np.int32(label)
 
     def create_dataset(paths, labels, batch_size=16, shuffle=False):
         """Create TensorFlow dataset from file paths"""
+        output_signature = (
+            tf.TensorSpec(shape=(*img_size, 3), dtype=tf.float32),
+            tf.TensorSpec(shape=(), dtype=tf.int32)
+        )
         dataset = tf.data.Dataset.from_tensor_slices((paths, labels))
         dataset = dataset.map(
             lambda x, y: tf.numpy_function(preprocess_image, [x, y], [tf.float32, tf.int32]),
-            num_parallel_calls=tf.data.AUTOTUNE
+            num_parallel_calls=tf.data.AUTOTUNE,
+            output_signature=output_signature
         )
         if shuffle:
             dataset = dataset.shuffle(buffer_size=1024)

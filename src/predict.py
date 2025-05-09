@@ -6,7 +6,7 @@ import argparse
 
 
 class LungDiseasePredictor:
-    def __init__(self, model_path='models/best_model.h5', img_size=(60, 60)):
+    def __init__(self, model_path='../models/best_model.h5', img_size=(96, 96)):
         """
         Initialize predictor
 

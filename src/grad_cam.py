@@ -88,7 +88,7 @@ class GradCAM:
 
         return superimposed_img
 
-    def visualize(self, image_path, img_size=(64, 64), save_path=None):
+    def visualize(self, image_path, img_size=(96, 96), save_path=None):
         """
         Generate and display Grad-CAM visualization
 
