@@ -6,7 +6,7 @@ import seaborn as sns
 import os
 
 
-def evaluate_model(model, test_dataset, class_names, save_dir='results'):
+def evaluate_model(model, test_dataset, class_names, save_dir='../results'):
     """
     Evaluate model performance on test data
 
@@ -50,7 +50,7 @@ def evaluate_model(model, test_dataset, class_names, save_dir='results'):
 
 if __name__ == '__main__':
     # Load model
-    model = tf.keras.models.load_model('models/best_model.h5')
+    model = tf.keras.models.load_model('../models/best_model.h5')
 
     # Load test data
     from data_preprocessing import load_and_preprocess_data

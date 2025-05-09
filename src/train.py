@@ -114,7 +114,7 @@ def train_model(data_dir, model_save_path='../models/best_model.h5', epochs=10):
     return model, history, test_dataset, class_names
 
 
-def plot_training_history(history, save_dir='results/training_plots'):
+def plot_training_history(history, save_dir='../results/training_plots'):
     """
     Plot training accuracy and loss metrics
 
