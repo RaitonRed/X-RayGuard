@@ -5,7 +5,7 @@ from sklearn.model_selection import train_test_split
 import cv2
 
 
-def load_and_preprocess_data(data_dir, img_size=(64, 64), test_size=0.2, val_size=0.1, seed=42):
+def load_and_preprocess_data(data_dir, img_size=(64, 64), test_size=0.2, val_size=0.1, seed=42, batch_size=16):
     """
     Load and preprocess image data from classified directories
 

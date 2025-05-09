@@ -58,7 +58,7 @@ def build_model(input_shape=(300, 300, 3), num_classes=3):
     return model
 
 
-def train_model(data_dir, model_save_path='models/best_model.h5', epochs=10):
+def train_model(data_dir, model_save_path='../models/best_model.h5', epochs=10):
     """
     Train model with input data
 
