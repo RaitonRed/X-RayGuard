@@ -1,9 +1,9 @@
 # Core Libraries
-tensorflow          # Deep learning framework
-keras              # High-level neural networks API
+tensorflow                   # Deep learning framework
+keras                        # High-level neural networks API
 opencv-python==4.6.0.66      # Image processing
-numpy                # Numerical computations
-pandas==                # Data manipulation
+numpy                        # Numerical computations
+pandas                       # Data manipulation
 
 # Visualization & Analysis
 matplotlib==3.6.2            # Plotting and visualization
@@ -17,5 +17,5 @@ Pillow==9.3.0                # Image handling
 requests==2.28.1             # HTTP requests (optional)
 
 # Development (optional)
-# gradio
+gradio                       # UI
 # grad-cam==1.4.6            # Uncomment if using external Grad-CAM

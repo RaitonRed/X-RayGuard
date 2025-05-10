@@ -6,10 +6,8 @@ predictor = LungDiseasePredictor()
 
 
 def predict(image):
-    # دریافت پیش‌بینی از مدل
     prediction = predictor.predict(image_path=image)
 
-    # فرمت‌دهی خروجی به صورت خوانا
     formatted_output = (
         f"🔍 Diagnosis Results:\n\n"
         f"🏷️ Predicted Class: {prediction['class']}\n"
@@ -17,7 +15,6 @@ def predict(image):
         "📊 Class Probabilities:\n"
     )
 
-    # افزودن احتمالات کلاس‌ها
     for cls, prob in prediction['probabilities'].items():
         formatted_output += f"• {cls}: {prob * 100:.2f}%\n"
 
@@ -52,8 +49,13 @@ with gr.Blocks() as Interface:
     gr.Markdown("___\nMade by **Raiton** with ❤")
 
 # Launch the interface
-Interface.queue().launch(
-    server_port=7860,
-    show_error=True,
-    inline=False,
-)
+try:
+    Interface.queue(max_size=20).launch(
+        server_port=7860,
+        show_error=True
+    )
+except TypeError:
+    Interface.queue().launch(
+        server_port=7860,
+        show_error=True
+    )
