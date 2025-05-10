@@ -4,6 +4,7 @@ from keras import layers, models, optimizers, callbacks
 from data_preprocessing import load_and_preprocess_data
 import matplotlib.pyplot as plt
 import os
+import options
 
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 os.environ["CUDA_VISIBLE_DEVICES"] = "-1"
@@ -59,7 +60,7 @@ def build_model(input_shape=(96, 96, 3), num_classes=3):
     return model
 
 
-def train_model(data_dir, model_save_path='../models/best_model.h5', epochs=10):
+def train_model(data_dir, model_save_path=options.MODELS_DIR+'best_model.h5', epochs=10):
     """
     Train model with input data
 
@@ -114,7 +115,7 @@ def train_model(data_dir, model_save_path='../models/best_model.h5', epochs=10):
     return model, history, test_dataset, class_names
 
 
-def plot_training_history(history, save_dir='../results/training_plots'):
+def plot_training_history(history, save_dir=options.RESULTS_DIR+'training_plots'):
     """
     Plot training accuracy and loss metrics
 
@@ -150,7 +151,7 @@ def plot_training_history(history, save_dir='../results/training_plots'):
 
 if __name__ == '__main__':
     # Example usage
-    DATA_DIR = '../data/raw/COVID-19_Radiography_Dataset'
+    DATA_DIR = options.DATA_DIR
     model, history, test_dataset, class_names = train_model(DATA_DIR)
     plot_training_history(history)
     print("Model training completed successfully!")

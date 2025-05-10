@@ -4,9 +4,9 @@ from sklearn.metrics import classification_report, confusion_matrix
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+import options
 
-
-def evaluate_model(model, test_dataset, class_names, save_dir='../results'):
+def evaluate_model(model, test_dataset, class_names, save_dir=options.RESULTS_DIR):
     """
     Evaluate model performance on test data
 
@@ -50,12 +50,12 @@ def evaluate_model(model, test_dataset, class_names, save_dir='../results'):
 
 if __name__ == '__main__':
     # Load model
-    model = tf.keras.models.load_model('../models/best_model.h5')
+    model = tf.keras.models.load_model(options.MODELS_DIR+'best_model.h5')
 
     # Load test data
     from data_preprocessing import load_and_preprocess_data
 
-    _, _, test_dataset, class_names = load_and_preprocess_data('../data/raw/COVID-19_Radiography_Dataset')
+    _, _, test_dataset, class_names = load_and_preprocess_data(options.DATA_DIR)
 
     # Evaluate model
     evaluate_model(model, test_dataset, class_names)

@@ -3,7 +3,7 @@ import tensorflow as tf
 import cv2
 import matplotlib.pyplot as plt
 import argparse
-
+import options
 
 class GradCAM:
     def __init__(self, model, layer_name=None):
@@ -17,18 +17,55 @@ class GradCAM:
         self.model = model
         self.layer_name = layer_name
 
+        # Ensure the model has been built
+        if not model.built:
+            # Get input shape from the first layer if available
+            if hasattr(model, 'input_shape'):
+                input_shape = model.input_shape
+            else:
+                # Default input shape if we can't determine it
+                input_shape = (None, 224, 224, 3)
+
+            # Create a dummy input to build the model
+            dummy_input = tf.zeros((1,) + input_shape[1:])
+            _ = model(dummy_input)
+
         # Find last convolutional layer if not specified
         if self.layer_name is None:
             for layer in reversed(model.layers):
-                if len(layer.output_shape) == 4:
+                # For models with nested layers (like Sequential inside Sequential)
+                if hasattr(layer, 'layers'):
+                    for inner_layer in reversed(layer.layers):
+                        if isinstance(inner_layer, tf.keras.layers.Conv2D):
+                            self.layer_name = inner_layer.name
+                            break
+                    if self.layer_name is not None:
+                        break
+
+                # Check if layer is a convolutional layer
+                if isinstance(layer, tf.keras.layers.Conv2D):
                     self.layer_name = layer.name
                     break
 
+        if self.layer_name is None:
+            print("Warning: Could not find a convolutional layer. Using the last layer before the output.")
+            if len(model.layers) > 1:
+                self.layer_name = model.layers[-2].name
+            else:
+                raise ValueError("Model doesn't have enough layers for Grad-CAM")
+
         # Create model that outputs target layer and predictions
-        self.grad_model = tf.keras.models.Model(
-            inputs=[self.model.inputs],
-            outputs=[self.model.get_layer(self.layer_name).output, self.model.output]
-        )
+        try:
+            self.grad_model = tf.keras.models.Model(
+                inputs=self.model.inputs,
+                outputs=[self.model.get_layer(self.layer_name).output, self.model.output]
+            )
+        except Exception as e:
+            print(f"Error creating Grad-CAM model: {str(e)}")
+            print("Available layers in the model:")
+            for i, layer in enumerate(self.model.layers):
+                print(f"  {i}: {layer.name} (type: {type(layer).__name__})")
+            raise
 
     def generate_heatmap(self, image, class_idx=None, eps=1e-8):
         """
@@ -136,14 +173,33 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image', type=str, required=True, help='Path to input image')
     parser.add_argument('--save', type=str, help='Path to save output visualization')
+    parser.add_argument('--model', type=str, default=options.MODELS_DIR+'best_model.h5', help='Path to model file')
     args = parser.parse_args()
 
-    # Load model and create Grad-CAM
-    model = tf.keras.models.load_model('models/best_model.h5')
-    grad_cam = GradCAM(model)
+    try:
+        # Load model and create Grad-CAM
+        print(f"Loading model from {args.model}...")
+        model = tf.keras.models.load_model(args.model)
 
-    # Generate visualization
-    if args.save:
-        grad_cam.visualize(args.image, save_path=args.save)
-    else:
-        grad_cam.visualize(args.image)
+        # Print model summary for debugging
+        print("Model summary:")
+        model.summary()
+
+        print("Creating Grad-CAM...")
+        grad_cam = GradCAM(model)
+
+        print(f"Using layer: {grad_cam.layer_name} for Grad-CAM")
+
+        # Generate visualization
+        print(f"Generating visualization for {args.image}...")
+        if args.save:
+            grad_cam.visualize(args.image, save_path=args.save)
+            print(f"Visualization saved to {args.save}")
+        else:
+            grad_cam.visualize(args.image)
+
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        import traceback
+
+        traceback.print_exc()

@@ -3,10 +3,10 @@ import numpy as np
 import cv2
 import os
 import argparse
-
+import options
 
 class LungDiseasePredictor:
-    def __init__(self, model_path='../models/best_model.h5', img_size=(96, 96)):
+    def __init__(self, model_path=options.MODELS_DIR+'best_model.h5', img_size=(96, 96)):
         """
         Initialize predictor
 
