@@ -28,14 +28,16 @@ with gr.Blocks() as Interface:
 
     gr.Markdown("___\nMade by **Raiton** with ❤")
 
-# Launch the interface
-try:
-    Interface.queue(max_size=20).launch(
-        server_port=7860,
-        show_error=True
-    )
-except TypeError:
-    Interface.queue().launch(
-        server_port=7860,
-        show_error=True
-    )
+
+def launch():
+    # Launch the interface
+    try:
+        Interface.queue(max_size=20).launch(
+            server_port=7860,
+            show_error=True
+        )
+    except TypeError:
+        Interface.queue().launch(
+            server_port=7860,
+            show_error=True
+        )
