@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 import argparse
 import options
 
+
 class GradCAM:
     def __init__(self, model, layer_name=None):
         """
