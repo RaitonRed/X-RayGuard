@@ -235,7 +235,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image', type=str, required=True, help='Path to input image')
     parser.add_argument('--save', type=str, help='Path to save output visualization')
-    parser.add_argument('--model', type=str, default=options.MODELS_DIR+'best_model.h5', help='Path to model file')
+    parser.add_argument('--model', type=str, default=options.MODELS_DIR + 'best_model.h5', help='Path to model file')
     args = parser.parse_args()
 
     try:
