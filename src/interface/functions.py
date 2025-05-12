@@ -3,6 +3,7 @@ from src.predict import LungDiseasePredictor
 # Initialize Predictor
 predictor = LungDiseasePredictor()
 
+
 def predict(image):
     prediction = predictor.predict(image_path=image)
 
