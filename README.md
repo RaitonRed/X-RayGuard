@@ -61,7 +61,7 @@
    ├── LICENSE
    ├── README.md
    ├── requirements.txt
-   ├── research_requirements.txt
+   └── research_requirements.txt
    ```
 ---
 ## 🔍 Dataset
