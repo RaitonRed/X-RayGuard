@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import argparse
 import os
 import options
-
+from predict import LungDiseasePredictor
 
 class GradCAM:
     def __init__(self, model, layer_name=None):
@@ -59,6 +59,10 @@ class GradCAM:
         """
         with tf.GradientTape() as tape:
             conv_outputs, predictions = self.grad_model(image)
+
+            if len(predictions.shape) > 2:
+                predictions = tf.reduce_mean(predictions, axis=[1, 2])
+
             predicted_class_idx = tf.argmax(predictions[0])
             loss = predictions[:, predicted_class_idx]
 
@@ -98,7 +102,7 @@ class GradCAM:
         # Combine images
         combined = cv2.addWeighted(original_image, alpha, heatmap, 1 - alpha, 0)
         return combined
-
+    
     def visualize(self, image_path, img_size=(96, 96), save_path=None):
         """
         Generate and visualize Grad-CAM.
@@ -155,14 +159,14 @@ if __name__ == '__main__':
     try:
         # Load model
         print(f"Loading model from {args.model}...")
-        model = tf.keras.models.load_model(args.model, compile=False)
+        full_model = tf.keras.models.load_model(args.model, compile=False)
 
         # Build model with dummy input
         dummy_input = np.zeros((1, 96, 96, 3), dtype=np.float32)
-        _ = model(dummy_input)  # Critical for Sequential models
+        _ = full_model(dummy_input)  # Critical for Sequential models
 
         # Use MobileNetV2 submodel directly
-        mobilenet_submodel = model.get_layer('mobilenetv2_0.35_96')
+        mobilenet_submodel = full_model.get_layer('mobilenetv2_0.35_96')
         _ = mobilenet_submodel(dummy_input)  # Build submodel
 
         # Create Grad-CAM with submodel
