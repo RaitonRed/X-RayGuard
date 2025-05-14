@@ -60,7 +60,7 @@ def build_model(input_shape=(96, 96, 3), num_classes=3):
     return model
 
 
-def train_model(data_dir, model_save_path=options.MODELS_DIR+'best_model.h5', epochs=10):
+def train_model(data_dir, model_save_path=os.path.join(options.MODELS_DIR, 'best_model.h5'), epochs=10):
     """
     Train model with input data
 

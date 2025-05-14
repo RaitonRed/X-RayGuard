@@ -50,7 +50,7 @@ def evaluate_model(model, test_dataset, class_names, save_dir=options.RESULTS_DI
 
 if __name__ == '__main__':
     # Load model
-    model = tf.keras.models.load_model(options.MODELS_DIR+'best_model.h5')
+    model = tf.keras.models.load_model(os.path.join(options.MODELS_DIR, 'best_model.h5'))
 
     # Load test data
     from data_preprocessing import load_and_preprocess_data

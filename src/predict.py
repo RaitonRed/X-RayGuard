@@ -3,10 +3,11 @@ import numpy as np
 import cv2
 import os
 import argparse
-import options
+import src.options as options
+
 
 class LungDiseasePredictor:
-    def __init__(self, model_path=options.MODELS_DIR+'best_model.h5', img_size=(96, 96)):
+    def __init__(self, model_path=None, img_size=(96, 96)):
         """
         Initialize predictor
 
@@ -14,6 +15,12 @@ class LungDiseasePredictor:
             model_path (str): Path to saved model
             img_size (tuple): Input image dimensions
         """
+        if model_path is None:
+            model_path = os.path.join(options.MODELS_DIR, 'best_model.h5')
+
+        if not os.path.exists(model_path):
+            raise FileNotFoundError(f"Model not found at: {model_path}")
+
         self.model = tf.keras.models.load_model(model_path)
         self.img_size = img_size
         self.class_names = ['COVID', 'Normal', 'Viral Pneumonia']  # Should match training data

@@ -4,8 +4,9 @@ import cv2
 import matplotlib.pyplot as plt
 import argparse
 import os
-import options
-from predict import LungDiseasePredictor
+import src.options as options
+from src.predict import LungDiseasePredictor
+
 
 class GradCAM:
     def __init__(self, model, layer_name=None):
@@ -160,7 +161,7 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser()
     parser.add_argument('--image', type=str, required=True, help='Path to input image')
     parser.add_argument('--save', type=str, help='Path to save output')
-    parser.add_argument('--model', type=str, default=options.MODELS_DIR + 'best_model.h5',
+    parser.add_argument('--model', type=str, default=os.path.join(options.MODELS_DIR, 'best_model.h5'),
                         help='Path to model file')
     parser.add_argument('--target_layer', type=str, default=None,
                         help='Name of target Conv2D layer (e.g., "block_2_project_BN")')
