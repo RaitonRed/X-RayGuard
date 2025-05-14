@@ -18,6 +18,7 @@ class GradCAM:
         """
         self.model = model
         self.layer_name = layer_name
+        self.predictor = LungDiseasePredictor()
 
         # Ensure model is built
         if not self.model.built:
@@ -102,7 +103,12 @@ class GradCAM:
         # Combine images
         combined = cv2.addWeighted(original_image, alpha, heatmap, 1 - alpha, 0)
         return combined
-    
+
+    def predict(self, image_path, img_size=(96, 96)):
+        prediction = self.predictor.predict(image_path=image_path)
+
+        return prediction['class']
+
     def visualize(self, image_path, img_size=(96, 96), save_path=None):
         """
         Generate and visualize Grad-CAM.
@@ -124,6 +130,9 @@ class GradCAM:
         # Create overlay
         cam_image = self.overlay_heatmap(original_image, heatmap)
 
+        # Predict
+        prediction = self.predict(image_path=image_path)
+
         # Plot results
         plt.figure(figsize=(12, 6))
         plt.subplot(1, 2, 1)
@@ -134,6 +143,7 @@ class GradCAM:
         plt.subplot(1, 2, 2)
         plt.imshow(cam_image)
         plt.title(f"Grad-CAM (Class {class_idx})")
+        plt.suptitle(f"Model Prediction: {prediction}")
         plt.axis("off")
 
         if save_path:
