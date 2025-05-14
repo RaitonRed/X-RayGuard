@@ -3,7 +3,6 @@ import functions
 
 with gr.Blocks() as Interface:
     gr.Markdown("# **X-RayGuard**")
-
     with gr.Tabs():
         with gr.Tab("Prediction"):
             with gr.Row():
@@ -19,13 +18,23 @@ with gr.Blocks() as Interface:
                         placeholder="Results will appear here..."
                     )
                     submit_btn = gr.Button("Analyze Image", variant="primary")
-
             submit_btn.click(
                 functions.predict,
                 inputs=[image],
                 outputs=result
             )
+        with gr.Tab("Grad-Cam"):
+            with gr.Row():
+                with gr.Column(scale=1, min_width=350):
+                    image = gr.Image(label="You X-Ray Image", type="filepath")
 
+                with gr.Column(scale=1, min_width=350):
+                    result = gr.Image(label="Grad-Cam Output")
+                    submit_btn.click(
+                        functions.grad_cam,
+                        inputs=[image],
+                        outputs=result
+                    )
     gr.Markdown("___\nMade by **Raiton** with ❤")
 
 
@@ -41,3 +50,7 @@ def launch():
             server_port=7860,
             show_error=True
         )
+
+
+if __name__ == "__main__":
+    launch()
