@@ -1,5 +1,5 @@
 import gradio as gr
-import functions
+from src.interface import functions
 
 with gr.Blocks() as Interface:
     gr.Markdown("# **X-RayGuard**")
@@ -30,6 +30,7 @@ with gr.Blocks() as Interface:
 
                 with gr.Column(scale=1, min_width=350):
                     result = gr.Image(label="Grad-Cam Output")
+                    submit_btn = gr.Button("Analyze Image", variant="primary")
                     submit_btn.click(
                         functions.grad_cam,
                         inputs=[image],

@@ -9,9 +9,10 @@ from src.grad_cam import GradCAM
 predictor = LungDiseasePredictor()
 
 model_dir = os.path.abspath(os.path.join(
-    os.path.dirname(__file__),  # Location of functions.py (src/interface/)
-    '..', '..', 'models',       # Go up 2 levels to X-RayGuard/, then into models/
-    'best_model.h5'
+    os.path.dirname(__file__),  # Location: src/interface/
+    '..', '..',                # Go up to X-RayGuard/
+    'models',                  # Enter models/
+    'best_model.h5'            # Target file
 ))
 
 if not os.path.exists(model_dir):

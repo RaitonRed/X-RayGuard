@@ -2,6 +2,7 @@ import numpy as np
 import tensorflow as tf
 import cv2
 import matplotlib.pyplot as plt
+from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
 import argparse
 import os
 import src.options as options
@@ -118,6 +119,9 @@ class GradCAM:
             image_path: Path to input image
             img_size: Model input size (H, W)
             save_path: Path to save visualization
+
+        Returns:
+            numpy array of the visualization if save_path is None
         """
         # Load and preprocess image
         original_image = cv2.cvtColor(cv2.imread(image_path), cv2.COLOR_BGR2RGB)
@@ -135,7 +139,7 @@ class GradCAM:
         prediction = self.predict(image_path=image_path)
 
         # Plot results
-        plt.figure(figsize=(12, 6))
+        fig = plt.figure(figsize=(12, 6))
         plt.subplot(1, 2, 1)
         plt.imshow(original_image)
         plt.title("Original Image")
@@ -152,9 +156,14 @@ class GradCAM:
             plt.savefig(save_path, bbox_inches='tight')
             plt.close()
             print(f"Saved to {save_path}")
+            return None
         else:
-            plt.tight_layout()
-            plt.show()
+            # Convert plot to numpy array
+            canvas = FigureCanvas(fig)
+            canvas.draw()
+            image_array = np.array(canvas.renderer.buffer_rgba())
+            plt.close(fig)
+            return image_array
 
 
 if __name__ == '__main__':
